@@ -1,0 +1,111 @@
+Evaluation
+For this evaluation, n represents the number of courses stored in the data structure. The analysis focuses only on reading the file, checking file formatting, creating course objects, validating prerequisites, and inserting course objects into the data structure.
+This analysis assumes that each course has a small, fixed number of prerequisites, as shown in the ABCU course data. Because prerequisites are stored as course numbers, the program must also check that every prerequisite listed exists as another course in the input file.
+
+Vector Runtime Analysis
+open fileName 1 1 1
+check if file opened correctly 1 1 1
+while there is another line in the file 1 n n
+read line from file 1 n n
+check if line is empty 1 n n
+split line by comma into tokens 1 n n
+check if number of tokens is less than 2 1 n n
+add line to fileLines 1 n n
+add course number to courseNumbers 1 n n
+close file 1 1 1
+for each line in fileLines 1 n n
+split line by comma into tokens 1 n n
+create Course object 1 n n
+store course number 1 n n
+store course title 1 n n
+for each prerequisite token 1 n n
+search courseNumbers for prerequisite n n n^2
+add prerequisite to course object 1 n n
+add course object to vector 1 n n
+Total Cost: n^2 + 15n + 3
+Runtime: O(n^2)
+
+The vector has a worst-case loading runtime of O(n^2). Reading the file and creating course objects are linear operations, but validating prerequisites requires searching through the temporary courseNumbers vector. Since that search can take O(n) time and can happen for up to n courses, the worst-case cost becomes O(n^2).
+The memory for the vector is O(n) because one course object is stored for each course. Additional temporary vectors, such as fileLines and courseNumbers, also require O(n) memory.
+Advantages of the vector:
+The vector is simple to understand and easy to implement. It stores course objects in a straightforward list and uses memory efficiently. It is also easy to sort the vector alphanumerically by course number before printing the course list.
+Disadvantages of the vector:
+Searching for a specific course requires scanning through the vector, which takes O(n) time. Printing an ordered course list requires sorting the vector first, which takes O(n log n). The vector is simple, but it is not the fastest structure for repeated course lookups.
+
+Hash Table Runtime Analysis
+open fileName 1 1 1
+check if file opened correctly 1 1 1
+while there is another line in the file 1 n n
+read line from file 1 n n
+check if line is empty 1 n n
+split line by comma into tokens 1 n n
+check if number of tokens is less than 2 1 n n
+add line to fileLines 1 n n
+add course number to courseNumbers 1 n n
+close file 1 1 1
+for each line in fileLines 1 n n
+split line by comma into tokens 1 n n
+create Course object 1 n n
+store course number 1 n n
+store course title 1 n n
+for each prerequisite token 1 n n
+search courseNumbers for prerequisite n n n^2
+add prerequisite to course object 1 n n
+insert course into hash table n n n^2
+Total Cost: 2n^2 + 14n + 3
+Runtime: O(n^2)
+The hash table has a worst-case loading runtime of O(n^2). Since there are n courses, worst-case insertion can add another O(n^2). However, in the average case, hash table insertion is usually O(1), which makes the hash table very efficient for loading and searching when collisions are handled well.
+The memory for the hash table is O(n). It stores one course object per course, but it also requires extra memory for buckets or table slots. Temporary storage for fileLines and courseNumbers also requires O(n). Overall memory use is still O(n), but with more overhead than a vector.
+Advantages of the hash table:
+The hash table is very fast for searching when it performs well. Looking up a specific course by course number is O(1) on average. This makes it a strong choice for the advisor requirement of printing one specific course and its prerequisites.
+Disadvantages of the hash table:
+A hash table does not naturally store data in sorted order. To print all courses in alphanumeric order, the program would need to copy the hash table contents into another structure and sort them, which takes O(n log n). Hash tables can also have collision issues, which can reduce performance in the worst case.
+
+Binary Search Tree Runtime Analysis
+open fileName 1 1 1
+check if file opened correctly 1 1 1
+while there is another line in the file 1 n n
+read line from file 1 n n
+check if line is empty 1 n n
+split line by comma into tokens 1 n n
+check if number of tokens is less than 2 1 n n
+add line to fileLines 1 n n
+add course number to courseNumbers 1 n n
+close file 1 1 1
+for each line in fileLines 1 n n
+split line by comma into tokens 1 n n
+create Course object 1 n n
+store course number 1 n n
+store course title 1 n n
+for each prerequisite token 1 n n
+search courseNumbers for prerequisite n n n^2
+add prerequisite to course object 1 n n
+insert course into binary search tree n n n^2
+Total Cost: 2n^2 + 14n + 3
+Runtime: O(n^2)
+The binary search tree has a worst-case loading runtime of O(n^2). Reading the file and creating the course objects are linear operations, but prerequisite validation can take O(n^2). Inserting into a binary search tree can also take O(n) per course in the worst case if the tree becomes unbalanced. Such as when course numbers are inserted in already sorted order. Since there are n courses, the worst-case insertion cost is O(n^2). In the average case, insertion into a reasonably balanced tree is O(log n), which would make the insertion portion O(n log n).
+The memory for the binary search tree is O(n). Each course is stored in one tree node. Each node also stores references to a left child and a right child, so the tree has more pointer overhead than a vector. However, overall memory growth is still linear.
+Advantages of the binary search tree:
+The binary search tree is the best structure for printing courses in alphanumeric order because an in-order traversal prints the course numbers from lowest to highest without needing a separate sorting step. Searching for a specific course is also efficient on average, with O(log n) search time if the tree is reasonably balanced.
+Disadvantages of the binary search tree:
+The main disadvantage is that a regular binary search tree can become unbalanced. If the courses are inserted in sorted order, the tree can behave like a linked list, causing search and insertion to degrade to O(n). It is also more complex to implement than a vector or hash table.
+
+Comparison of Advisor Requirements
+Requirement 1: Print all courses in alphanumeric order
+Vector:
+The vector must be sorted before printing. Sorting takes O(n log n), and printing takes O(n). Total runtime is O(n log n).
+Hash Table:
+The hash table does not store courses in sorted order. The program must copy the courses into another structure and sort them. This also takes O(n log n).
+Binary Search Tree:
+The binary search tree can print the courses in sorted order using in-order traversal. This takes O(n), which is better than sorting a vector or hash table every time the list is printed.
+Requirement 2: Print one course title and prerequisites
+Vector:
+Searching for a course in a vector takes O(n) because the program may need to scan every course.
+Hash Table:
+Searching for a course in a hash table takes O(1) on average, making it the fastest option for individual course lookup. In the worst case, due to collisions, it can degrade to O(n).
+Binary Search Tree:
+Searching for a course in a binary search tree takes O(log n) on average if the tree is balanced. In the worst case, if the tree is unbalanced, searching can degrade to O(n).
+
+Recommendation
+I recommend using the binary search tree for the ABCU advising program. Although the worst-case loading time can be O(n^2) if the tree becomes unbalanced, the binary search tree best supports the advisor's requirement to print all courses in alphanumeric order. Since an in-order traversal prints the courses from lowest to highest course number, the program can display the sorted course list in O(n) time without performing a separate sort.
+The hash table is very strong for quickly finding one course because it provides O(1) average lookup time. However, it does not naturally keep courses sorted, so printing the full course list requires copying and sorting the data. The vector is the simplest structure, but it requires linear searching for individual courses and sorting for the full course list. The binary search tree provides the best balance between the two major requirements: printing all courses in sorted order and finding an individual course efficiently. For this reason, I would use the binary search tree in the final Project One code.
